@@ -1,12 +1,13 @@
-# 🚀 Deploy no Coolify - Plataforma de Estudos
+# 🚀 Deploy no Coolify v4.0.0 - Plataforma de Estudos
 
 ## 📋 Pré-requisitos
 
-- Coolify instalado e funcionando
+- Coolify v4.0.0 instalado e funcionando
 - Domínio configurado
+- Repositório Git criado
 - Acesso SSH ao servidor
 
-## 🗄️ 1. Configurar Serviços no Coolify
+## 🗄️ 1. Configurar Serviços no Coolify v4
 
 ### PostgreSQL
 1. **Criar serviço PostgreSQL:**
@@ -48,14 +49,28 @@
    MINIO_SECRET_KEY=[password]
    ```
 
-## 🔧 2. Criar Aplicação no Coolify
+## 🔧 2. Criar Aplicação no Coolify v4
 
-### Configurações Básicas
-- **Nome:** `plataforma-concurso-osasco`
-- **Tipo:** Docker Compose
-- **Repository:** `[seu-repositorio-git]`
-- **Branch:** `main`
-- **Docker Compose File:** `docker-compose.prod.yml`
+### Passo a Passo no Dashboard:
+
+1. **Acessar Dashboard do Coolify**
+   - Login no painel admin
+   - Ir para "Projects" ou "Applications"
+
+2. **Criar Nova Aplicação**
+   - Clicar em "New Application" ou "+"
+   - Escolher "Git Repository"
+
+3. **Configurar Source**
+   - **Git Provider:** GitHub/GitLab/Gitea
+   - **Repository:** `[usuario]/plataforma-concurso-osasco`
+   - **Branch:** `main`
+   - **Build Pack:** Docker
+
+4. **Configurações de Build**
+   - **Dockerfile:** `Dockerfile` (padrão)
+   - **Context:** `.` (raiz do projeto)
+   - **Port:** `3000`
 
 ### Variáveis de Ambiente
 ```env
