@@ -36,6 +36,7 @@ export default function ScraperPage() {
   const [examUrl, setExamUrl] = useState('')
   const [batchUrls, setBatchUrls] = useState('')
   const [populatingQuestions, setPopulatingQuestions] = useState(false)
+  const [populatingExtended, setPopulatingExtended] = useState(false)
   const [progress, setProgress] = useState(0)
 
   const addResult = (result: ScrapingResult) => {
@@ -57,6 +58,24 @@ export default function ScraperPage() {
       })
     } finally {
       setPopulatingQuestions(false)
+    }
+  }
+
+  const handlePopulateExtended = async () => {
+    setPopulatingExtended(true)
+    try {
+      const response = await fetch('/api/populate-extended', {
+        method: 'POST'
+      })
+      const result = await response.json()
+      addResult(result)
+    } catch (error) {
+      addResult({
+        success: false,
+        message: 'Erro ao popular questões estendidas: ' + (error as Error).message
+      })
+    } finally {
+      setPopulatingExtended(false)
     }
   }
   const handleFindExams = async () => {
@@ -297,7 +316,7 @@ https://vunesp.com.br/prova3`}
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Database className="h-5 w-5" />
-              Popular Questões
+              Popular Questões Básicas
             </CardTitle>
             <CardDescription>
               Adiciona 10 questões específicas do cargo diretamente no banco
@@ -319,7 +338,40 @@ https://vunesp.com.br/prova3`}
               ) : (
                 <Upload className="h-4 w-4 mr-2" />
               )}
-              Adicionar Questões
+              Adicionar 10 Questões
+            </Button>
+          </CardContent>
+        </Card>
+
+        {/* Popular Questões Estendidas */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Database className="h-5 w-5" />
+              🚀 Popular Banco Completo
+            </CardTitle>
+            <CardDescription>
+              Adiciona 120+ questões para gerar vários simulados diferentes
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="text-sm text-gray-600">
+              <p>• <strong>40 questões</strong> de Língua Portuguesa</p>
+              <p>• <strong>40 questões</strong> de Matemática</p>
+              <p>• <strong>40 questões</strong> de Conhecimentos Pedagógicos</p>
+              <p className="text-green-600 font-medium">= Simulados infinitos! 🎯</p>
+            </div>
+            <Button 
+              onClick={handlePopulateExtended}
+              disabled={populatingExtended}
+              className="w-full bg-green-600 hover:bg-green-700"
+            >
+              {populatingExtended ? (
+                <Loader2 className="h-4 w-4 animate-spin mr-2" />
+              ) : (
+                <Upload className="h-4 w-4 mr-2" />
+              )}
+              Adicionar 120+ Questões
             </Button>
           </CardContent>
         </Card>
