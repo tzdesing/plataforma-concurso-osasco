@@ -117,40 +117,45 @@ export default function HomePage() {
                 <Button className="w-full" variant="outline">
                   Conhecimentos Pedagógicos (20 questões)
                 </Button>
-              </Link>
             </div>
           </CardContent>
         </Card>
 
         {/* Relatórios */}
-        <Card className="hover:shadow-lg transition-shadow">
+        <Card className="hover:shadow-lg transition-shadow cursor-pointer">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <BarChart3 className="h-5 w-5 text-purple-600" />
               Relatórios
             </CardTitle>
-            <CardDescription>
-              Acompanhe seu desempenho e identifique pontos de melhoria
-            </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="space-y-3">
-              <Link href="/relatorios/desempenho">
-                <Button className="w-full" variant="outline">
-                  Desempenho Geral
-                </Button>
-              </Link>
-              <Link href="/relatorios/por-disciplina">
-                <Button className="w-full" variant="outline">
-                  Por Disciplina
-                </Button>
-              </Link>
-              <Link href="/relatorios/evolucao">
-                <Button className="w-full" variant="outline">
-                  Evolução no Tempo
-                </Button>
-              </Link>
-            </div>
+            <p className="text-gray-600 mb-4">
+              Análise detalhada do seu desempenho
+            </p>
+            <Button variant="outline" className="w-full">
+              Ver Relatórios
+            </Button>
+          </CardContent>
+        </Card>
+
+        {/* Scraper Admin */}
+        <Card className="hover:shadow-lg transition-shadow cursor-pointer">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <span className="text-lg">🕷️</span>
+              Scraper VUNESP
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-gray-600 mb-4">
+              Importar questões automaticamente
+            </p>
+            <Link href="/admin/scraper">
+              <Button variant="outline" className="w-full">
+                Acessar Scraper
+              </Button>
+            </Link>
           </CardContent>
         </Card>
       </div>
