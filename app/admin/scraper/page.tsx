@@ -35,12 +35,30 @@ export default function ScraperPage() {
   const [searchKeyword, setSearchKeyword] = useState('')
   const [examUrl, setExamUrl] = useState('')
   const [batchUrls, setBatchUrls] = useState('')
+  const [populatingQuestions, setPopulatingQuestions] = useState(false)
   const [progress, setProgress] = useState(0)
 
   const addResult = (result: ScrapingResult) => {
     setResults(prev => [result, ...prev])
   }
 
+  const handlePopulateQuestions = async () => {
+    setPopulatingQuestions(true)
+    try {
+      const response = await fetch('/api/populate-questions', {
+        method: 'POST'
+      })
+      const result = await response.json()
+      addResult(result)
+    } catch (error) {
+      addResult({
+        success: false,
+        message: 'Erro ao popular questões: ' + (error as Error).message
+      })
+    } finally {
+      setPopulatingQuestions(false)
+    }
+  }
   const handleFindExams = async () => {
     setLoading(true)
     try {
@@ -270,6 +288,38 @@ https://vunesp.com.br/prova3`}
                 <Database className="h-4 w-4 mr-2" />
               )}
               Processar em Lote
+            </Button>
+          </CardContent>
+        </Card>
+
+        {/* Popular Questões Diretamente */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Database className="h-5 w-5" />
+              Popular Questões
+            </CardTitle>
+            <CardDescription>
+              Adiciona 10 questões específicas do cargo diretamente no banco
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="text-sm text-gray-600">
+              <p>• 3 questões de Língua Portuguesa</p>
+              <p>• 3 questões de Matemática</p>
+              <p>• 4 questões de Conhecimentos Pedagógicos</p>
+            </div>
+            <Button 
+              onClick={handlePopulateQuestions}
+              disabled={populatingQuestions}
+              className="w-full"
+            >
+              {populatingQuestions ? (
+                <Loader2 className="h-4 w-4 animate-spin mr-2" />
+              ) : (
+                <Upload className="h-4 w-4 mr-2" />
+              )}
+              Adicionar Questões
             </Button>
           </CardContent>
         </Card>
