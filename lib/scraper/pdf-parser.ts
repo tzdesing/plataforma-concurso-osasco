@@ -92,9 +92,9 @@ export class PDFParser {
    */
   private identifyQuestionPatterns(text: string): RegExp[] {
     return [
-      /\d+\.\s*(.+?)(?=\d+\.|$)/gs, // Padrão: "1. Questão..."
-      /Questão\s*\d+[:\-\s]*(.+?)(?=Questão\s*\d+|$)/gs, // Padrão: "Questão 1: ..."
-      /\(\d+\)\s*(.+?)(?=\(\d+\)|$)/gs // Padrão: "(1) Questão..."
+      /\d+\.\s*(.+?)(?=\d+\.|$)/g, // Padrão: "1. Questão..."
+      /Questão\s*\d+[:\-\s]*(.+?)(?=Questão\s*\d+|$)/g, // Padrão: "Questão 1: ..."
+      /\(\d+\)\s*(.+?)(?=\(\d+\)|$)/g // Padrão: "(1) Questão..."
     ]
   }
 
@@ -104,7 +104,7 @@ export class PDFParser {
   private extractAlternatives(questionText: string): string[] {
     const alternatives: string[] = []
     
-    // Padrões comuns de alternativas
+    // Padrões comuns de alternativas - versão simplificada
     const patterns = [
       /[A-E]\)\s*(.+?)(?=[A-E]\)|$)/g,
       /\([A-E]\)\s*(.+?)(?=\([A-E]\)|$)/g,
@@ -112,8 +112,8 @@ export class PDFParser {
     ]
     
     for (const pattern of patterns) {
-      const matches = questionText.matchAll(pattern)
-      for (const match of matches) {
+      let match
+      while ((match = pattern.exec(questionText)) !== null) {
         if (match[1]?.trim()) {
           alternatives.push(match[0].trim())
         }
