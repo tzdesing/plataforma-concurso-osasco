@@ -23,6 +23,9 @@ RUN npm run build
 FROM base AS runner
 WORKDIR /app
 
+# Install OpenSSL and compatibility libraries for Prisma in production
+RUN apk add --no-cache openssl openssl-dev libc6-compat
+
 ENV NODE_ENV=production
 
 RUN addgroup --system --gid 1001 nodejs
@@ -38,6 +41,7 @@ RUN chown nextjs:nodejs .next
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 COPY --from=builder --chown=nextjs:nodejs /app/prisma ./prisma
+COPY --from=builder --chown=nextjs:nodejs /app/node_modules/.prisma ./node_modules/.prisma
 
 USER nextjs
 
