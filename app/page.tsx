@@ -2,6 +2,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button'
 import { BookOpen, Clock, BarChart3, Target, Calendar, Users } from 'lucide-react'
 import Link from 'next/link'
+import QuestionStats from './components/QuestionStats'
 
 export default function HomePage() {
   const examDate = new Date('2025-12-14')
@@ -30,36 +31,7 @@ export default function HomePage() {
       </div>
 
       {/* Quick Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-12">
-        <Card>
-          <CardContent className="p-6 text-center">
-            <BookOpen className="h-8 w-8 text-blue-600 mx-auto mb-2" />
-            <div className="text-2xl font-bold">3</div>
-            <div className="text-sm text-gray-600">Disciplinas</div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="p-6 text-center">
-            <Target className="h-8 w-8 text-green-600 mx-auto mb-2" />
-            <div className="text-2xl font-bold">40</div>
-            <div className="text-sm text-gray-600">Questões na Prova</div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="p-6 text-center">
-            <Clock className="h-8 w-8 text-orange-600 mx-auto mb-2" />
-            <div className="text-2xl font-bold">3h</div>
-            <div className="text-sm text-gray-600">Duração da Prova</div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="p-6 text-center">
-            <Users className="h-8 w-8 text-purple-600 mx-auto mb-2" />
-            <div className="text-2xl font-bold">10</div>
-            <div className="text-sm text-gray-600">Vagas Disponíveis</div>
-          </CardContent>
-        </Card>
-      </div>
+      <QuestionStats />
 
       {/* Main Actions */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">

@@ -7,8 +7,23 @@ import { Progress } from '@/components/ui/progress'
 import { Clock, CheckCircle, AlertCircle, ArrowLeft, ArrowRight } from 'lucide-react'
 import Link from 'next/link'
 
+interface Question {
+  id: string
+  statement: string
+  alternatives: Array<{
+    id: string
+    letter: string
+    text: string
+  }>
+  correctAnswer: string
+  explanation?: string
+  subject: string
+  topic?: string
+  difficulty?: string
+}
+
 // Mock data - será substituído por dados reais do banco
-const mockQuestions = [
+const mockQuestions: Question[] = [
   {
     id: '1',
     subject: 'Língua Portuguesa',
@@ -54,12 +69,48 @@ const mockQuestions = [
 ]
 
 export default function SimuladoCompletoPage() {
+  const [questions, setQuestions] = useState<Question[]>(mockQuestions)
+  const [loading, setLoading] = useState(true)
   const [currentQuestion, setCurrentQuestion] = useState(0)
   const [answers, setAnswers] = useState<Record<string, string>>({})
   const [timeLeft, setTimeLeft] = useState(3 * 60 * 60) // 3 horas em segundos
   const [isStarted, setIsStarted] = useState(false)
   const [isFinished, setIsFinished] = useState(false)
   const [showResults, setShowResults] = useState(false)
+
+  // Buscar questões reais da API
+  useEffect(() => {
+    fetchQuestions()
+  }, [])
+
+  const fetchQuestions = async () => {
+    try {
+      const response = await fetch('/api/questions?limit=40')
+      const result = await response.json()
+      
+      if (result.success && result.questions.length > 0) {
+        // Converter formato da API para o formato esperado
+        const formattedQuestions: Question[] = result.questions.map((q: any) => ({
+          id: q.id,
+          statement: q.statement,
+          alternatives: q.alternatives,
+          correctAnswer: q.correctAnswer,
+          explanation: q.explanation,
+          subject: q.subject,
+          topic: q.topic,
+          difficulty: q.difficulty
+        }))
+        setQuestions(formattedQuestions)
+      } else {
+        console.log('Usando questões mock - banco vazio')
+      }
+    } catch (error) {
+      console.error('Erro ao buscar questões:', error)
+      console.log('Usando questões mock')
+    } finally {
+      setLoading(false)
+    }
+  }
 
   // Timer
   useEffect(() => {
@@ -91,7 +142,7 @@ export default function SimuladoCompletoPage() {
   }
 
   const handleNext = () => {
-    if (currentQuestion < mockQuestions.length - 1) {
+    if (currentQuestion < questions.length - 1) {
       setCurrentQuestion(prev => prev + 1)
     }
   }
@@ -109,16 +160,29 @@ export default function SimuladoCompletoPage() {
 
   const calculateResults = () => {
     let correct = 0
-    mockQuestions.forEach(question => {
+    questions.forEach(question => {
       if (answers[question.id] === question.correctAnswer) {
         correct++
       }
     })
     return {
       correct,
-      total: mockQuestions.length,
-      percentage: Math.round((correct / mockQuestions.length) * 100)
+      total: questions.length,
+      percentage: Math.round((correct / questions.length) * 100)
     }
+  }
+
+  if (loading) {
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <Card className="max-w-2xl mx-auto">
+          <CardContent className="p-8 text-center">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
+            <p className="text-gray-600">Carregando questões...</p>
+          </CardContent>
+        </Card>
+      </div>
+    )
   }
 
   if (!isStarted) {
@@ -132,15 +196,21 @@ export default function SimuladoCompletoPage() {
             <div className="text-center">
               <div className="grid grid-cols-3 gap-4 mb-6">
                 <div className="text-center">
-                  <div className="text-2xl font-bold text-blue-600">10</div>
+                  <div className="text-2xl font-bold text-blue-600">
+                    {questions.filter(q => q.subject === 'Língua Portuguesa').length}
+                  </div>
                   <div className="text-sm text-gray-600">Português</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-2xl font-bold text-green-600">10</div>
+                  <div className="text-2xl font-bold text-green-600">
+                    {questions.filter(q => q.subject === 'Matemática').length}
+                  </div>
                   <div className="text-sm text-gray-600">Matemática</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-2xl font-bold text-purple-600">20</div>
+                  <div className="text-2xl font-bold text-purple-600">
+                    {questions.filter(q => q.subject.includes('Pedagógicos')).length}
+                  </div>
                   <div className="text-sm text-gray-600">Pedagógicos</div>
                 </div>
               </div>
@@ -153,7 +223,7 @@ export default function SimuladoCompletoPage() {
             <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
               <h3 className="font-semibold text-yellow-800 mb-2">Instruções:</h3>
               <ul className="text-sm text-yellow-700 space-y-1">
-                <li>• O simulado tem 40 questões de múltipla escolha</li>
+                <li>• O simulado tem {questions.length} questões de múltipla escolha</li>
                 <li>• Você tem 3 horas para completar</li>
                 <li>• Pode navegar entre as questões livremente</li>
                 <li>• O gabarito será mostrado ao final</li>
@@ -216,7 +286,7 @@ export default function SimuladoCompletoPage() {
 
             <div className="space-y-4">
               <h3 className="text-lg font-semibold">Revisão das Questões</h3>
-              {mockQuestions.map((question, index) => {
+              {questions.map((question, index) => {
                 const userAnswer = answers[question.id]
                 const isCorrect = userAnswer === question.correctAnswer
                 return (
@@ -278,8 +348,8 @@ export default function SimuladoCompletoPage() {
     )
   }
 
-  const question = mockQuestions[currentQuestion]
-  const progress = ((currentQuestion + 1) / mockQuestions.length) * 100
+  const question = questions[currentQuestion]
+  const progress = ((currentQuestion + 1) / questions.length) * 100
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -294,7 +364,7 @@ export default function SimuladoCompletoPage() {
               </Button>
             </Link>
             <div className="text-sm text-gray-600">
-              Questão {currentQuestion + 1} de {mockQuestions.length}
+              Questão {currentQuestion + 1} de {questions.length}
             </div>
           </div>
           <div className={`flex items-center gap-2 px-3 py-1 rounded-lg ${
@@ -370,7 +440,7 @@ export default function SimuladoCompletoPage() {
         </Button>
 
         <div className="flex gap-2">
-          {currentQuestion === mockQuestions.length - 1 ? (
+          {currentQuestion === questions.length - 1 ? (
             <Button onClick={handleFinish} className="bg-green-600 hover:bg-green-700">
               Finalizar Simulado
             </Button>
@@ -390,14 +460,14 @@ export default function SimuladoCompletoPage() {
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-10 gap-2">
-            {mockQuestions.map((_, index) => (
+            {questions.map((_, index) => (
               <button
                 key={index}
                 onClick={() => setCurrentQuestion(index)}
                 className={`w-8 h-8 text-xs rounded border ${
                   index === currentQuestion
                     ? 'bg-blue-600 text-white border-blue-600'
-                    : answers[mockQuestions[index].id]
+                    : answers[questions[index].id]
                     ? 'bg-green-100 text-green-700 border-green-300'
                     : 'bg-gray-100 text-gray-600 border-gray-300 hover:bg-gray-200'
                 }`}

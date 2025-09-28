@@ -16,8 +16,11 @@ import {
   Database,
   CheckCircle,
   AlertCircle,
-  Loader2
+  Loader2,
+  ArrowLeft,
+  Home
 } from 'lucide-react'
+import Link from 'next/link'
 
 interface ScrapingResult {
   success: boolean
@@ -167,6 +170,14 @@ export default function ScraperPage() {
     <div className="container mx-auto px-4 py-8">
       {/* Header */}
       <div className="mb-8">
+        <div className="flex items-center gap-4 mb-4">
+          <Link href="/">
+            <Button variant="outline" size="sm">
+              <Home className="h-4 w-4 mr-2" />
+              Voltar ao Início
+            </Button>
+          </Link>
+        </div>
         <h1 className="text-3xl font-bold text-gray-900 mb-2">
           🕷️ Scraper PCI Concursos
         </h1>
