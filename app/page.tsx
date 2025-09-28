@@ -117,6 +117,7 @@ export default function HomePage() {
                 <Button className="w-full" variant="outline">
                   Conhecimentos Pedagógicos (20 questões)
                 </Button>
+              </Link>
             </div>
           </CardContent>
         </Card>
