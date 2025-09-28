@@ -131,10 +131,10 @@ export default function ScraperPage() {
       {/* Header */}
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-gray-900 mb-2">
-          🕷️ Scraper de Questões VUNESP
+          🕷️ Scraper PCI Concursos
         </h1>
         <p className="text-gray-600">
-          Ferramenta para coleta automática de questões de provas anteriores
+          Ferramenta para coleta automática de questões específicas para Professor Adjunto de Educação Básica I - Osasco
         </p>
       </div>
 
@@ -147,7 +147,7 @@ export default function ScraperPage() {
               Buscar Provas Disponíveis
             </CardTitle>
             <CardDescription>
-              Encontra todas as provas disponíveis no site da VUNESP
+              Encontra simulados por disciplina no PCI Concursos
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -161,7 +161,7 @@ export default function ScraperPage() {
               ) : (
                 <Search className="h-4 w-4 mr-2" />
               )}
-              Buscar Provas
+              Buscar Simulados
             </Button>
           </CardContent>
         </Card>

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import VunespScraper from '@/lib/scraper/vunesp-scraper'
+import PCIConcursosScraper from '@/lib/scraper/pci-scraper'
 import PDFParser from '@/lib/scraper/pdf-parser'
 
 export async function GET(request: NextRequest) {
@@ -9,7 +9,7 @@ export async function GET(request: NextRequest) {
     const keyword = searchParams.get('keyword')
     const limit = parseInt(searchParams.get('limit') || '20')
 
-    const scraper = new VunespScraper()
+    const scraper = new PCIConcursosScraper()
 
     switch (action) {
       case 'find-exams':
@@ -78,7 +78,7 @@ export async function POST(request: NextRequest) {
     const body = await request.json()
     const { action, data } = body
 
-    const scraper = new VunespScraper()
+    const scraper = new PCIConcursosScraper()
     const pdfParser = new PDFParser()
 
     switch (action) {

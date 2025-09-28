@@ -145,12 +145,12 @@ export default function HomePage() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <span className="text-lg">🕷️</span>
-              Scraper VUNESP
+              Scraper PCI Concursos
             </CardTitle>
           </CardHeader>
           <CardContent>
             <p className="text-gray-600 mb-4">
-              Importar questões automaticamente
+              Questões específicas para Professor Adjunto I
             </p>
             <Link href="/admin/scraper">
               <Button variant="outline" className="w-full">
