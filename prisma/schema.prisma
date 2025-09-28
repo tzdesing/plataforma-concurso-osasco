@@ -1,0 +1,147 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Subject {
+  id          String     @id @default(cuid())
+  name        String     @unique
+  description String?
+  weight      Int        @default(1) // Peso da disciplina no concurso
+  questions   Question[]
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  @@map("subjects")
+}
+
+model Topic {
+  id          String     @id @default(cuid())
+  name        String     @unique
+  description String?
+  questions   Question[]
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  @@map("topics")
+}
+
+model Question {
+  id            String            @id @default(cuid())
+  statement     String            // Enunciado da questão
+  type          QuestionType      @default(MULTIPLE_CHOICE)
+  difficulty    Difficulty        @default(MEDIUM)
+  subject       Subject           @relation(fields: [subjectId], references: [id])
+  subjectId     String
+  topic         Topic?            @relation(fields: [topicId], references: [id])
+  topicId       String?
+  alternatives  Alternative[]
+  correctAnswer String            // ID da alternativa correta ou resposta para discursiva
+  explanation   String?           // Explicação da resposta
+  source        String?           // Fonte da questão (ex: VUNESP 2023)
+  year          Int?              // Ano do concurso
+  institution   String?           // Instituição (VUNESP, FCC, etc)
+  examResults   ExamResult[]
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
+
+  @@map("questions")
+}
+
+model Alternative {
+  id         String   @id @default(cuid())
+  letter     String   // A, B, C, D, E
+  text       String
+  question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  questionId String
+  createdAt  DateTime @default(now())
+
+  @@map("alternatives")
+}
+
+model Exam {
+  id          String       @id @default(cuid())
+  title       String
+  description String?
+  type        ExamType     @default(SIMULATION)
+  duration    Int?         // Duração em minutos
+  results     ExamResult[]
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  @@map("exams")
+}
+
+model ExamResult {
+  id           String   @id @default(cuid())
+  exam         Exam     @relation(fields: [examId], references: [id])
+  examId       String
+  question     Question @relation(fields: [questionId], references: [id])
+  questionId   String
+  userAnswer   String?  // Resposta do usuário
+  isCorrect    Boolean
+  timeSpent    Int?     // Tempo gasto na questão em segundos
+  completedAt  DateTime @default(now())
+
+  @@map("exam_results")
+}
+
+model StudyContent {
+  id          String      @id @default(cuid())
+  title       String
+  content     String      // Conteúdo em markdown ou HTML
+  type        ContentType @default(TEXT)
+  subjectId   String
+  topicId     String?
+  fileUrl     String?     // URL do arquivo (PDF, imagem, etc)
+  order       Int         @default(0)
+  isPublished Boolean     @default(true)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  @@map("study_contents")
+}
+
+model StudyProgress {
+  id        String   @id @default(cuid())
+  contentId String
+  completed Boolean  @default(false)
+  timeSpent Int      @default(0) // Tempo em segundos
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("study_progress")
+}
+
+enum QuestionType {
+  MULTIPLE_CHOICE
+  TRUE_FALSE
+  ESSAY
+}
+
+enum Difficulty {
+  EASY
+  MEDIUM
+  HARD
+}
+
+enum ExamType {
+  SIMULATION
+  PRACTICE
+  MOCK_EXAM
+}
+
+enum ContentType {
+  TEXT
+  PDF
+  VIDEO
+  IMAGE
+  LINK
+}
