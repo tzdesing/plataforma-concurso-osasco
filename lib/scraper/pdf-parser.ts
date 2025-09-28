@@ -1,5 +1,5 @@
 import { readFileSync } from 'fs'
-import { ScrapedQuestion } from './vunesp-scraper'
+import { ScrapedQuestion } from './pci-scraper'
 
 export interface PDFQuestion {
   questionNumber: number
