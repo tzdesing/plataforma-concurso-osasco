@@ -85,10 +85,13 @@ export default function SimuladoCompletoPage() {
 
   const fetchQuestions = async () => {
     try {
-      const response = await fetch('/api/questions?limit=40')
+      // Tentar buscar questões balanceadas primeiro
+      const response = await fetch('/api/questions/balanced?total=40')
       const result = await response.json()
       
       if (result.success && result.questions.length > 0) {
+        console.log('✅ Questões balanceadas carregadas:', result.distribution)
+        
         // Converter formato da API para o formato esperado
         const formattedQuestions: Question[] = result.questions.map((q: any) => ({
           id: q.id,
@@ -102,11 +105,31 @@ export default function SimuladoCompletoPage() {
         }))
         setQuestions(formattedQuestions)
       } else {
-        console.log('Usando questões mock - banco vazio')
+        console.log('❌ Falha na API balanceada, tentando API normal...')
+        
+        // Fallback para API normal
+        const fallbackResponse = await fetch('/api/questions?limit=40')
+        const fallbackResult = await fallbackResponse.json()
+        
+        if (fallbackResult.success && fallbackResult.questions.length > 0) {
+          const formattedQuestions: Question[] = fallbackResult.questions.map((q: any) => ({
+            id: q.id,
+            statement: q.statement,
+            alternatives: q.alternatives,
+            correctAnswer: q.correctAnswer,
+            explanation: q.explanation,
+            subject: q.subject,
+            topic: q.topic,
+            difficulty: q.difficulty
+          }))
+          setQuestions(formattedQuestions)
+        } else {
+          console.log('⚠️ Usando questões mock - banco vazio')
+        }
       }
     } catch (error) {
-      console.error('Erro ao buscar questões:', error)
-      console.log('Usando questões mock')
+      console.error('❌ Erro ao buscar questões:', error)
+      console.log('⚠️ Usando questões mock')
     } finally {
       setLoading(false)
     }
@@ -209,7 +232,7 @@ export default function SimuladoCompletoPage() {
                 </div>
                 <div className="text-center">
                   <div className="text-2xl font-bold text-purple-600">
-                    {questions.filter(q => q.subject.includes('Pedagógicos')).length}
+                    {questions.filter(q => q.subject && q.subject.includes('Pedagógicos')).length}
                   </div>
                   <div className="text-sm text-gray-600">Pedagógicos</div>
                 </div>
