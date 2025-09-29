@@ -254,15 +254,15 @@ export default function ScraperPage() {
               Questões Reais Específicas
             </CardTitle>
             <CardDescription className="text-green-600">
-              30 questões REAIS específicas para Professor Adjunto I (10 por disciplina)
+              70 questões REAIS específicas para Professor Adjunto I (20+20+30)
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="bg-white p-3 rounded border border-green-200">
               <div className="text-sm text-green-700 space-y-1">
-                <div>✅ <strong>Língua Portuguesa:</strong> Interpretação, gramática, ortografia</div>
-                <div>✅ <strong>Matemática:</strong> Operações, porcentagem, frações, geometria</div>
-                <div>✅ <strong>Conhecimentos Pedagógicos:</strong> LDB, ECA, teorias, BNCC</div>
+                <div>✅ <strong>Língua Portuguesa (20):</strong> Interpretação, gramática, ortografia, crase, sintaxe</div>
+                <div>✅ <strong>Matemática (20):</strong> Operações, porcentagem, frações, geometria, regra de três</div>
+                <div>✅ <strong>Conhecimentos Pedagógicos (30):</strong> LDB, ECA, teorias, BNCC, didática</div>
               </div>
             </div>
             <Button 
