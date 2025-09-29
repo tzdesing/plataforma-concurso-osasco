@@ -246,6 +246,51 @@ export default function ScraperPage() {
           </CardContent>
         </Card>
 
+        {/* Questões Reais Específicas */}
+        <Card className="border-green-200 bg-green-50">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-green-700">
+              <CheckCircle className="h-5 w-5" />
+              Questões Reais Específicas
+            </CardTitle>
+            <CardDescription className="text-green-600">
+              30 questões REAIS específicas para Professor Adjunto I (10 por disciplina)
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="bg-white p-3 rounded border border-green-200">
+              <div className="text-sm text-green-700 space-y-1">
+                <div>✅ <strong>Língua Portuguesa:</strong> Interpretação, gramática, ortografia</div>
+                <div>✅ <strong>Matemática:</strong> Operações, porcentagem, frações, geometria</div>
+                <div>✅ <strong>Conhecimentos Pedagógicos:</strong> LDB, ECA, teorias, BNCC</div>
+              </div>
+            </div>
+            <Button 
+              onClick={async () => {
+                setLoading(true)
+                try {
+                  const response = await fetch('/api/populate-real', { method: 'POST' })
+                  const result = await response.json()
+                  addResult(result)
+                } catch (error) {
+                  addResult({ success: false, message: 'Erro ao popular questões reais' })
+                } finally {
+                  setLoading(false)
+                }
+              }}
+              disabled={loading}
+              className="w-full bg-green-600 hover:bg-green-700"
+            >
+              {loading ? (
+                <Loader2 className="h-4 w-4 animate-spin mr-2" />
+              ) : (
+                <CheckCircle className="h-4 w-4 mr-2" />
+              )}
+              🚀 Popular Questões REAIS
+            </Button>
+          </CardContent>
+        </Card>
+
         {/* Extrair Prova Específica */}
         <Card>
           <CardHeader>
